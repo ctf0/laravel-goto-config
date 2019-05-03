@@ -1,0 +1,43 @@
+{
+    "name": "laravel-goto-config",
+    "displayName": "Laravel goto config",
+    "description": "Quick jump to config",
+    "version": "0.0.1",
+    "publisher": "ctf0",
+    "engines": {
+        "vscode": "^1.19.0"
+    },
+    "bugs": {
+        "url": "https://github.com/ctf0/laravel-goto-config/issues"
+    },
+    "homepage": "https://github.com/ctf0/laravel-goto-config/blob/master/README.md",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ctf0/laravel-goto-config.git"
+    },
+    "icon": "images/logo.png",
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "PHP",
+        "Laravel"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./out/src/extension",
+    "scripts": {
+        "vscode:prepublish": "tsc -p ./",
+        "compile": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "node ./node_modules/vscode/bin/test"
+    },
+    "devDependencies": {
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0",
+        "mocha": "^2.3.3",
+        "@types/node": "^6.0.40",
+        "@types/mocha": "^2.2.32"
+    }
+}
