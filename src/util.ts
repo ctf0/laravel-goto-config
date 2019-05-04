@@ -9,34 +9,46 @@ export function getFilePath(text: string, document: TextDocument) {
 }
 
 export function getFilePaths(text: string, document: TextDocument) {
-    let path = scanConfigPath(document);
-    let extension = '.php';
+    let paths = workspace.getConfiguration('laravel_goto_config').folders;
     let workspaceFolder = workspace.getWorkspaceFolder(document.uri).uri.fsPath;
-
-    text = text.replace(/\"|\'/g, '');
+    let fileList = text.replace(/\"|\'/g, '').split('.');
     let result = [];
-    let split = text.split('.');
+    let found = null;
 
-    while (split.length) {
-        let join = split.length > 0 ? split.join('/') : `${split}/`;
-        let showPath = `${path}/${join}${extension}`;
-        let filePath = workspaceFolder + showPath;
+    for (let item in paths) {
+        let whereTo = paths[item];
 
-        if (fs.existsSync(filePath)) {
-            result.push({
-                "name": 'path',
-                "showPath": showPath,
-                "fileUri": Uri.file(filePath)
-            });
-            split = []
+        if (found) {
+            let showPath = `${whereTo}/${found}`;
+            let filePath = workspaceFolder + showPath;
+
+            if (fs.existsSync(filePath)) {
+                result.push({
+                    "name": item,
+                    "showPath": showPath,
+                    "fileUri": Uri.file(filePath)
+                });
+            }
         } else {
-            split.pop();
+            while (!found) {
+                let join = fileList.join('/');
+                let file = `${join}.php`
+                let showPath = `${whereTo}/${file}`;
+                let filePath = workspaceFolder + showPath;
+
+                if (fs.existsSync(filePath)) {
+                    result.push({
+                        "name": item,
+                        "showPath": showPath,
+                        "fileUri": Uri.file(filePath)
+                    });
+                    found = file
+                } else {
+                    fileList.pop();
+                }
+            }
         }
     }
 
     return result;
-}
-
-export function scanConfigPath(document: TextDocument) {
-    return "/config";
 }

@@ -27,6 +27,26 @@
         "*"
     ],
     "main": "./out/src/extension",
+    "contributes": {
+        "configuration": {
+            "type": "object",
+            "title": "Laravel goto config configuration",
+            "properties": {
+                "laravel_goto_config.folders": {
+                    "type": "object",
+                    "default": {
+                        "default": "/config"
+                    },
+                    "items": {
+                        "type": "string"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "description": "Multiple folders"
+                }
+            }
+        }
+    },
     "scripts": {
         "vscode:prepublish": "tsc -p ./",
         "compile": "tsc -watch -p ./",
@@ -34,10 +54,10 @@
         "test": "node ./node_modules/vscode/bin/test"
     },
     "devDependencies": {
-        "typescript": "^2.0.3",
-        "vscode": "^1.0.0",
-        "mocha": "^2.3.3",
+        "@types/mocha": "^2.2.32",
         "@types/node": "^6.0.40",
-        "@types/mocha": "^2.2.32"
+        "mocha": "^6.1.4",
+        "typescript": "^2.0.3",
+        "vscode": "^1.0.0"
     }
 }
