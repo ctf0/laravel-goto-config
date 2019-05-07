@@ -14,7 +14,7 @@ import * as util from '../util';
 
 export class HoverProvider implements vsHoverProvider {
     provideHover(doc: TextDocument, pos: Position, token: CancellationToken): ProviderResult<Hover> {
-        let reg = /(?<=config\()(['"])[^'"]*\1/;
+        let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/;
         let linkRange = doc.getWordRangeAtPosition(pos, reg);
 
         if (!linkRange) return

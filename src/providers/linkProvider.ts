@@ -16,7 +16,7 @@ export class LinkProvider implements vsDocumentLinkProvider {
     public provideDocumentLinks(doc: TextDocument, token: CancellationToken): ProviderResult<DocumentLink[]> {
         let documentLinks = [];
         let index = 0;
-        let reg = /(?<=config\()(['"])[^'"]*\1/g;
+        let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/g;
 
         while (index < doc.lineCount) {
             let line = doc.lineAt(index);
