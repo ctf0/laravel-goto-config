@@ -3,17 +3,15 @@
 import {
     DocumentLinkProvider as vsDocumentLinkProvider,
     TextDocument,
-    CancellationToken,
     ProviderResult,
     DocumentLink,
-    workspace,
     Position,
     Range,
 } from "vscode"
 import * as util from '../util';
 
 export class LinkProvider implements vsDocumentLinkProvider {
-    public provideDocumentLinks(doc: TextDocument, token: CancellationToken): ProviderResult<DocumentLink[]> {
+    public provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
         let documentLinks = [];
         let index = 0;
         let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/g;
