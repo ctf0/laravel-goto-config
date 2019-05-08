@@ -26,7 +26,8 @@
         "file navigation"
     ],
     "activationEvents": [
-        "*"
+        "onLanguage:php",
+        "onLanguage:blade"
     ],
     "main": "./out/src/extension",
     "contributes": {
