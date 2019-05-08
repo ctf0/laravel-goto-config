@@ -21,7 +21,9 @@
     ],
     "keywords": [
         "PHP",
-        "Laravel"
+        "Laravel",
+        "goto",
+        "file navigation"
     ],
     "activationEvents": [
         "*"
