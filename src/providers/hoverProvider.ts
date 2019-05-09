@@ -11,7 +11,7 @@ import {
 } from "vscode";
 import * as util from '../util';
 
-export class HoverProvider implements vsHoverProvider {
+export default class HoverProvider implements vsHoverProvider {
     provideHover(doc: TextDocument, pos: Position): ProviderResult<Hover> {
         let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/;
         let linkRange = doc.getWordRangeAtPosition(pos, reg);
@@ -26,6 +26,7 @@ export class HoverProvider implements vsHoverProvider {
                 text += `\`${filePaths[i].name}\``;
                 text += ` [${workspaceFolder.name + filePaths[i].showPath}](${filePaths[i].fileUri})  \r`;
             }
+
             return new Hover(new MarkdownString(text));
         };
     }

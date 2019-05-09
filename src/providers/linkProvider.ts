@@ -10,7 +10,7 @@ import {
 } from "vscode"
 import * as util from '../util';
 
-export class LinkProvider implements vsDocumentLinkProvider {
+export default class LinkProvider implements vsDocumentLinkProvider {
     public provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
         let documentLinks = [];
         let index = 0;
