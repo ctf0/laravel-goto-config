@@ -7,6 +7,7 @@ import HoverProvider from './providers/hoverProvider';
 export function activate(context: ExtensionContext) {
     let hover = languages.registerHoverProvider(['php', 'blade'], new HoverProvider());
     let link = languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider());
+
     context.subscriptions.push(hover, link);
 }
 
