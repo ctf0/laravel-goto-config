@@ -2,7 +2,7 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel goto config",
     "description": "Quick jump to config",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "publisher": "ctf0",
     "engines": {
         "vscode": "^1.19.0"
@@ -39,6 +39,11 @@
                     "minItems": 1,
                     "uniqueItems": true,
                     "description": "Multiple folders"
+                },
+                "laravel_goto_config.maxLinesCount": {
+                    "type": "integer",
+                    "default": 300,
+                    "description": "stop the extension if the opened file lines count is more than"
                 }
             }
         }
