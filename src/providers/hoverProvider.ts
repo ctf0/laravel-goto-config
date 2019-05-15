@@ -13,7 +13,7 @@ import * as util from '../util';
 
 export default class HoverProvider implements vsHoverProvider {
     provideHover(doc: TextDocument, pos: Position): ProviderResult<Hover> {
-        let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/;
+        let reg = /(?<=config\(|Config::get\(|Config::set\()(['"])[^'"]*\1/;
         let linkRange = doc.getWordRangeAtPosition(pos, reg);
 
         if (!linkRange) return
