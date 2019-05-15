@@ -13,7 +13,7 @@ import * as util from '../util';
 
 export default class LinkProvider implements vsDocumentLinkProvider {
     public provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
-        let reg = /(?<=config\(|Config::get\()(['"])[^'"]*\1/g;
+        let reg = /(?<=config\(|Config::get\(|Config::set\()(['"])[^'"]*\1/g;
         let config = workspace.getConfiguration('laravel_goto_config');
         let linesCount = doc.lineCount
         let documentLinks = [];
