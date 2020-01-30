@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import {
     DocumentLinkProvider as vsDocumentLinkProvider,
@@ -9,37 +9,31 @@ import {
     workspace,
     Range
 } from "vscode"
-import * as util from '../util';
+import * as util from '../util'
 
 export default class LinkProvider implements vsDocumentLinkProvider {
-    public provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
-        let reg = /(?<=config\(|Config::get\(|Config::set\()(['"])[^'"]*\1/g;
-        let config = workspace.getConfiguration('laravel_goto_config');
-        let linesCount = doc.lineCount
-        let documentLinks = [];
-        let index = 0;
+    provideDocumentLinks(doc: TextDocument): ProviderResult<DocumentLink[]> {
+        let workspaceFolder = workspace.getWorkspaceFolder(doc.uri)
+        let reg = new RegExp(/(config|Config::(get|set))\((['"](.*)?['"])\)/, 'gm')
+        let documentLinks = []
 
-        if (linesCount <= config.maxLinesCount) {
-            while (index < linesCount) {
-                let line = doc.lineAt(index);
-                let result = line.text.match(reg);
+        doc.getText().replace(reg, (match: string, p1: any, p2: any, p3: any, p4: any, offset: any) => {
+            // console.log(match, p1, p2, p3, p4, offset)
+            let file = util.getFilePath(p3, doc)
 
-                if (result != null) {
-                    for (let item of result) {
-                        let file = util.getFilePath(item, doc);
-                        if (file != null) {
-                            let start = new Position(line.lineNumber, line.text.indexOf(item) + 1);
-                            let end = start.translate(0, item.length - 2);
-                            let documentlink = new DocumentLink(new Range(start, end), file.fileUri);
-                            documentLinks.push(documentlink);
-                        };
-                    }
-                }
+            if (file != null) {
+                let pos = doc.positionAt(offset)
+                let start = new Position(pos.line, pos.character)
+                let end = new Position(pos.line, pos.character + match.length)
 
-                index++;
+                let documentlink = new DocumentLink(new Range(start, end), file.fileUri)
+                documentlink.tooltip = `${file.name}: ${workspaceFolder.name}${file.showPath}`
+                documentLinks.push(documentlink)
             }
-        }
 
-        return documentLinks;
+            return match
+        })
+
+        return documentLinks
     }
 }
