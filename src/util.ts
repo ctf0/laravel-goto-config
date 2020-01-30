@@ -1,54 +1,35 @@
 'use strict'
 
 import { workspace, TextDocument, Uri } from 'vscode'
-import * as fs from "fs"
 
-export function getFilePath(text: string, document: TextDocument) {
-    let paths = getFilePaths(text, document)
+const glob = require("fast-glob")
 
-    return paths.length > 0 ? paths[0] : null
+export async function getFilePaths(text: string, document: TextDocument) {
+    let info = text.replace(new RegExp(/(config|Config::(get|set))\(['"]|['"]\)/, 'g'), '')
+
+    return getData(document, info)
 }
 
-export function getFilePaths(text: string, document: TextDocument) {
-    let paths = workspace.getConfiguration('laravel_goto_config').folders
+async function getData(document, list) {
+    let fileList = list.split('.')
+    fileList.pop()
+
     let workspaceFolder = workspace.getWorkspaceFolder(document.uri).uri.fsPath
-    let fileList = text.replace(/\"|\'/g, '').split('.')
+    let paths = workspace.getConfiguration('laravel_goto_config').folders
+    let toCheck = []
+    while (fileList.length > 0) {
+        toCheck.push(`**/${fileList.join('/')}.php`)
+        fileList.pop()
+    }
+
     let result = []
-    let found = null
+    for (const path of paths) {
+        let urls = await glob(toCheck, { cwd: `${workspaceFolder}/${path}` })
 
-    for (let item in paths) {
-        let whereTo = paths[item]
-
-        if (found) {
-            let showPath = `${whereTo}/${found}`
-            let filePath = workspaceFolder + showPath
-
-            if (fs.existsSync(filePath)) {
-                result.push({
-                    "name": item,
-                    "showPath": showPath,
-                    "fileUri": Uri.file(filePath)
-                })
-            }
-        } else {
-            while (!found) {
-                let join = fileList.join('/')
-                let file = `${join}.php`
-                let showPath = `${whereTo}/${file}`
-                let filePath = workspaceFolder + showPath
-
-                if (fs.existsSync(filePath)) {
-                    result.push({
-                        "name": item,
-                        "showPath": showPath,
-                        "fileUri": Uri.file(filePath)
-                    })
-                    found = file
-                } else {
-                    fileList.pop()
-                }
-            }
-        }
+        result.push({
+            showPath: path,
+            fileUri: Uri.file(`${workspaceFolder}/${path}/${urls[0]}`)
+        })
     }
 
     return result
