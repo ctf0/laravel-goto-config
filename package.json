@@ -2,12 +2,12 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel goto config",
     "description": "Quick jump to config",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "ctf0",
     "engines": {
         "vscode": "^1.41.0"
     },
-    "repository": "https://github.com/ctf0/laravel-goto-config.git",
+    "repository": "https://github.com/ctf0/laravel-goto-config",
     "icon": "images/logo.png",
     "categories": [
         "Other"
@@ -26,7 +26,7 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "Laravel goto config configuration",
+            "title": "Laravel goto config",
             "properties": {
                 "laravel_goto_config.folders": {
                     "type": "array",

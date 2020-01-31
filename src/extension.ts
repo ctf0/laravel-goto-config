@@ -3,34 +3,41 @@
 import { languages, ExtensionContext, window } from 'vscode'
 import LinkProvider from './providers/linkProvider'
 
+let providers = []
 const debounce = require('lodash.debounce')
 
 export function activate(context: ExtensionContext) {
     setTimeout(() => {
-        context.subscriptions.push(
-            languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider())
-        )
+        if (window.activeTextEditor) {
+            initProvider()
+        }
 
         window.onDidChangeTextEditorVisibleRanges(
             debounce(function (e) {
-                context.subscriptions.push(
-                    languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider())
-                )
+                clearAll()
+                initProvider()
             }, 250)
         )
 
-        window.onDidChangeVisibleTextEditors(
-            debounce(function (editors) {
-                if (editors.length) {
-                    context.subscriptions.push(
-                        languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider())
-                    )
+        window.onDidChangeActiveTextEditor(
+            debounce(function (editor) {
+                if (editor) {
+                    clearAll()
+                    initProvider()
                 }
-            }, 500)
+            }, 250)
         )
     }, 2000)
 }
 
+function initProvider() {
+    providers.push(languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider()))
+}
+
+function clearAll() {
+    return providers.forEach((e) => e.dispose())
+}
+
 export function deactivate() {
-    //
+    clearAll()
 }

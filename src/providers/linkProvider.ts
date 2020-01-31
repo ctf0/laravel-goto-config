@@ -13,7 +13,7 @@ import * as util from '../util'
 export default class LinkProvider implements vsDocumentLinkProvider {
     async provideDocumentLinks(doc: TextDocument): Promise<DocumentLink[]> {
         let range = window.activeTextEditor.visibleRanges[0]
-        let reg = new RegExp(/(config|Config::(get|set))\(['"](.*)?['"]\)/, 'g')
+        let reg = new RegExp(/(config|Config::(get|set))\(['"](.*?)\)/, 'g')
         let documentLinks = []
 
         for (let i = range.start.line; i <= range.end.line; i++) {
