@@ -15,3 +15,7 @@
 ## 0.0.4
 
 - better api
+
+## 0.0.7
+
+- go to key
