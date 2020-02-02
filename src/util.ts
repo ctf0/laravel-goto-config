@@ -13,7 +13,7 @@ import {
 const glob = require("fast-glob")
 
 export async function getFilePaths(text, document) {
-    let info = text.match(new RegExp(/['"](.*?)['"]/))[1]
+    let info = text.replace(/['"]/g, '')
 
     return getData(document, info)
 }
@@ -39,10 +39,10 @@ async function getData(document, list) {
         let url = urls[0]
 
         result.push({
-            showPath: `${path}/${url}`,
+            tooltip: `${path}/${url}`,
             fileUri: Uri
-                .parse(`${editor}${workspaceFolder}/${path}/${url}?query=${info}`)
-                .with({ authority: 'ctf0.laravel-goto-config' })
+                .parse(`${editor}${workspaceFolder}/${path}/${url}`)
+                .with({ authority: 'ctf0.laravel-goto-config', query: info })
         })
     }
 
@@ -60,13 +60,13 @@ export function scrollToText() {
                     .then(() => {
                         setTimeout(() => {
                             let editor = window.activeTextEditor
-                            let range = getTextPosition(query.replace('query=', ''), editor.document)
+                            let range = getTextPosition(query, editor.document)
 
                             if (range) {
                                 editor.selection = new Selection(range.start, range.end)
-                                editor.revealRange(range, 2)
+                                editor.revealRange(range, 3)
                             }
-                        }, 100)
+                        }, 500)
                     })
             }
         }
@@ -75,24 +75,22 @@ export function scrollToText() {
 
 function getTextPosition(searchFor, doc) {
     let txt = doc.getText()
+    let arr = searchFor.split('.')
+    let last = arr[arr.length - 1]
+    let regex = ''
     let match
 
     if (searchFor.includes('.')) {
-        let arr = searchFor.split('.')
-        let last = arr[arr.length - 1]
-        let regex = ''
-
         for (const item of arr) {
             regex += item == last
-                ? `(?<found>${item}).*=>`
+                ? `${item}.*=>`
                 : `['"]${item}.*\\[([\\S\\s]*?)`
         }
 
         match = new RegExp(regex).exec(txt)
     } else {
-        match = new RegExp(`['"](?<found>${searchFor})['"].*=>`).exec(txt)
+        match = new RegExp(`['"]${searchFor}['"].*=>`).exec(txt)
     }
-
 
     if (match) {
         let pos = doc.positionAt(match.index + match[0].length)
@@ -102,9 +100,10 @@ function getTextPosition(searchFor, doc) {
 }
 
 /* Config ------------------------------------------------------------------- */
-export let methods
+const escapeStringRegexp = require('escape-string-regexp')
+export let methods: any = ''
 
 export function readConfig() {
     methods = workspace.getConfiguration('laravel_goto_config').methods
-    methods = methods.join('|')
+    methods = methods.map((e) => escapeStringRegexp(e)).join('|')
 }

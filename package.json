@@ -1,8 +1,8 @@
 {
     "name": "laravel-goto-config",
-    "displayName": "Laravel goto config",
+    "displayName": "Laravel Goto Config",
     "description": "Quick jump to config",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "publisher": "ctf0",
     "engines": {
         "vscode": "^1.41.0"
@@ -27,7 +27,7 @@
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "Laravel goto config",
+            "title": "Laravel Goto Config",
             "properties": {
                 "laravel_goto_config.folders": {
                     "type": "array",
@@ -77,6 +77,7 @@
         "vscode-test": "^1.2.2"
     },
     "dependencies": {
+        "escape-string-regexp": "^2.0.0",
         "fast-glob": "^3.1.1",
         "lodash.debounce": "^4.0.8"
     }

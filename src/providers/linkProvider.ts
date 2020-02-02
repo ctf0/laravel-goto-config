@@ -20,7 +20,7 @@ export default class LinkProvider implements vsDocumentLinkProvider {
 
     async provideDocumentLinks(doc: TextDocument): Promise<DocumentLink[]> {
         let range = window.activeTextEditor.visibleRanges[0]
-        let reg = new RegExp(`(${this.regex})\\(['"](.*?)\\)`, 'g')
+        let reg = new RegExp(`(?<=(${this.regex})\\()['"](.*?)['"]`, 'g')
         let documentLinks = []
 
         for (let i = range.start.line; i <= range.end.line; i++) {
@@ -38,7 +38,7 @@ export default class LinkProvider implements vsDocumentLinkProvider {
 
                         for (const file of files) {
                             let documentlink = new DocumentLink(new Range(start, end), file.fileUri)
-                            documentlink.tooltip = file.showPath
+                            documentlink.tooltip = file.tooltip
                             documentLinks.push(documentlink)
                         }
                     }
