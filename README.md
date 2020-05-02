@@ -1,5 +1,7 @@
 # Laravel Goto Config
 
+- package by default search in `root/config` only
+
 ## Features
 
 - direct scroll to config key
