@@ -10,7 +10,7 @@ import {
     Selection
 } from 'vscode'
 
-const glob = require("fast-glob")
+const glob = require('fast-glob')
 
 export async function getFilePaths(text, document) {
     let info = text.replace(/['"]/g, '')
@@ -35,15 +35,17 @@ async function getData(document, list) {
 
     let result = []
     for (const path of paths) {
-        let urls = await glob(toCheck, { cwd: `${workspaceFolder}/${path}` })
+        let urls = await glob(toCheck, {cwd: `${workspaceFolder}/${path}`})
         let url = urls[0]
 
-        result.push({
-            tooltip: `${path}/${url}`,
-            fileUri: Uri
-                .parse(`${editor}${workspaceFolder}/${path}/${url}`)
-                .with({ authority: 'ctf0.laravel-goto-config', query: info })
-        })
+        if (url != undefined) {
+            result.push({
+                tooltip: `${path}/${url}`,
+                fileUri: Uri
+                    .parse(`${editor}${workspaceFolder}/${path}/${url}`)
+                    .with({authority: 'ctf0.laravel-goto-config', query: info})
+            })
+        }
     }
 
     return result
@@ -53,7 +55,7 @@ async function getData(document, list) {
 export function scrollToText() {
     window.registerUriHandler({
         handleUri(uri) {
-            let { authority, path, query } = uri
+            let {authority, path, query} = uri
 
             if (authority == 'ctf0.laravel-goto-config') {
                 commands.executeCommand('vscode.openFolder', Uri.file(path))

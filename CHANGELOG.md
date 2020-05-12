@@ -23,3 +23,7 @@
 ## 0.0.8
 
 - add config for methods to search for
+
+## 0.1.0
+
+- fix `undefined` config link
