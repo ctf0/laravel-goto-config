@@ -2,10 +2,10 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel Goto Config",
     "description": "Quick jump to config",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "publisher": "ctf0",
     "engines": {
-        "vscode": "^1.41.0"
+        "vscode": "^1.48.0"
     },
     "repository": "https://github.com/ctf0/laravel-goto-config",
     "icon": "images/logo.png",
@@ -66,19 +66,19 @@
         "test": "node ./out/test/runTest.js"
     },
     "devDependencies": {
-        "@types/glob": "^7.1.1",
-        "@types/mocha": "^5.2.7",
-        "@types/node": "^12.11.7",
-        "@types/vscode": "^1.41.0",
-        "glob": "^7.1.5",
-        "mocha": "^6.2.2",
-        "tslint": "^5.20.0",
-        "typescript": "^3.6.4",
-        "vscode-test": "^1.2.2"
+        "@types/glob": "^7.1.3",
+        "@types/mocha": "^8.0.3",
+        "@types/node": "^14.6.0",
+        "@types/vscode": "^1.48.0",
+        "glob": "^7.1.6",
+        "mocha": "^8.1.2",
+        "tslint": "^6.1.3",
+        "typescript": "^4.0.2",
+        "vscode-test": "^1.4.0"
     },
     "dependencies": {
-        "escape-string-regexp": "^2.0.0",
-        "fast-glob": "^3.1.1",
+        "escape-string-regexp": "^4.0.0",
+        "fast-glob": "^3.2.4",
         "lodash.debounce": "^4.0.8"
     }
 }

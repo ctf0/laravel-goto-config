@@ -1,13 +1,13 @@
 'use strict'
 
 import {
-    languages,
     ExtensionContext,
+    languages,
     window,
     workspace
 } from 'vscode'
 import LinkProvider from './providers/linkProvider'
-import * as util from './util'
+import * as util    from './util'
 
 let providers = []
 const debounce = require('lodash.debounce')
@@ -16,7 +16,7 @@ export function activate(context: ExtensionContext) {
     util.readConfig()
 
     // config
-    workspace.onDidChangeConfiguration(async (e) => {
+    workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration('laravel_goto_config')) {
             util.readConfig()
         }
