@@ -27,3 +27,7 @@
 ## 0.1.0
 
 - fix `undefined` config link
+
+## 0.1.3
+
+- fix not scrolling to key in some cases

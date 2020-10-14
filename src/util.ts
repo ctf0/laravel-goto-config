@@ -1,13 +1,13 @@
 'use strict'
 
 import {
-    workspace,
-    Uri,
-    env,
-    window,
-    Range,
     commands,
-    Selection
+    env,
+    Range,
+    Selection,
+    Uri,
+    window,
+    workspace
 } from 'vscode'
 
 const glob = require('fast-glob')
@@ -20,8 +20,7 @@ export async function getFilePaths(text, document) {
 
 async function getData(document, list) {
     let fileList = list.split('.')
-    let info = fileList.slice(1).join('.')
-    fileList.pop()
+    let keyName = fileList.pop()
 
     let workspaceFolder = workspace.getWorkspaceFolder(document.uri).uri.fsPath
     let paths = workspace.getConfiguration('laravel_goto_config').folders
@@ -43,7 +42,7 @@ async function getData(document, list) {
                 tooltip: `${path}/${url}`,
                 fileUri: Uri
                     .parse(`${editor}${workspaceFolder}/${path}/${url}`)
-                    .with({authority: 'ctf0.laravel-goto-config', query: info})
+                    .with({authority: 'ctf0.laravel-goto-config', query: keyName})
             })
         }
     }
