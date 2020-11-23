@@ -5,6 +5,7 @@
 ## Features
 
 - direct scroll to config key
+- add key to clipboard if not found in file
 
 ### Limitations
 

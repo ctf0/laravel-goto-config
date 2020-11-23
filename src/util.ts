@@ -67,6 +67,17 @@ export function scrollToText() {
                                 editor.selection = new Selection(range.start, range.end)
                                 editor.revealRange(range, 3)
                             }
+
+                            if (!range && query) {
+                                window.showInformationMessage(
+                                    'Laravel Goto Config: Copy Key To Clipboard',
+                                    ...['Copy']
+                                ).then((e) => {
+                                    if (e) {
+                                        env.clipboard.writeText(`'${query}'`)
+                                    }
+                                })
+                            }
                         }, 500)
                     })
             }

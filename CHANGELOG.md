@@ -31,3 +31,7 @@
 ## 0.1.3
 
 - fix not scrolling to key in some cases
+
+## 0.1.4
+
+- copy unfound key to clipboard
