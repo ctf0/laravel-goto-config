@@ -17,7 +17,7 @@ export function activate(context: ExtensionContext) {
 
     // config
     workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration('laravel_goto_config')) {
+        if (e.affectsConfiguration(util.PACKAGE_NAME)) {
             util.readConfig()
         }
     })

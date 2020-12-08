@@ -35,3 +35,7 @@
 ## 0.1.4
 
 - copy unfound key to clipboard
+
+## 0.1.5
+
+- fix package settings name

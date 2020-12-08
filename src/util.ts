@@ -22,8 +22,8 @@ async function getData(document, list) {
     let fileList = list.split('.')
     let keyName = fileList.pop()
 
-    let workspaceFolder = workspace.getWorkspaceFolder(document.uri).uri.fsPath
-    let paths = workspace.getConfiguration('laravel_goto_config').folders
+    let workspaceFolder = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
+    let paths = config.folders
     let editor = `${env.uriScheme}://file`
 
     let toCheck = []
@@ -39,8 +39,8 @@ async function getData(document, list) {
 
         if (url != undefined) {
             result.push({
-                tooltip: `${path}/${url}`,
-                fileUri: Uri
+                tooltip : `${path}/${url}`,
+                fileUri : Uri
                     .parse(`${editor}${workspaceFolder}/${path}/${url}`)
                     .with({authority: 'ctf0.laravel-goto-config', query: keyName})
             })
@@ -53,8 +53,8 @@ async function getData(document, list) {
 /* Scroll ------------------------------------------------------------------- */
 export function scrollToText() {
     window.registerUriHandler({
-        handleUri(uri) {
-            let {authority, path, query} = uri
+        handleUri(provider) {
+            let {authority, path, query} = provider
 
             if (authority == 'ctf0.laravel-goto-config') {
                 commands.executeCommand('vscode.openFolder', Uri.file(path))
@@ -113,9 +113,12 @@ function getTextPosition(searchFor, doc) {
 
 /* Config ------------------------------------------------------------------- */
 const escapeStringRegexp = require('escape-string-regexp')
+export const PACKAGE_NAME = 'laravelGotoConfig'
+export let config: any = {}
 export let methods: any = ''
 
 export function readConfig() {
-    methods = workspace.getConfiguration('laravel_goto_config').methods
-    methods = methods.map((e) => escapeStringRegexp(e)).join('|')
+    config = workspace.getConfiguration(PACKAGE_NAME)
+
+    methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
 }

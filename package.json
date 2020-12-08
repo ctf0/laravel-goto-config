@@ -2,10 +2,10 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel Goto Config",
     "description": "Quick jump to config",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "publisher": "ctf0",
     "engines": {
-        "vscode": "^1.48.0"
+        "vscode": "^1.51.0"
     },
     "repository": "https://github.com/ctf0/laravel-goto-config",
     "icon": "images/logo.png",
@@ -29,7 +29,7 @@
             "type": "object",
             "title": "Laravel Goto Config",
             "properties": {
-                "laravel_goto_config.folders": {
+                "laravelGotoConfig.folders": {
                     "type": "array",
                     "default": [
                         "config"
@@ -41,7 +41,7 @@
                     "uniqueItems": true,
                     "description": "Multiple folders"
                 },
-                "laravel_goto_config.methods": {
+                "laravelGotoConfig.methods": {
                     "type": "array",
                     "default": [
                         "config",
@@ -67,14 +67,14 @@
     },
     "devDependencies": {
         "@types/glob": "^7.1.3",
-        "@types/mocha": "^8.0.3",
-        "@types/node": "^14.6.0",
-        "@types/vscode": "^1.48.0",
+        "@types/mocha": "^8.2.0",
+        "@types/node": "^14.14.10",
+        "@types/vscode": "^1.51.0",
         "glob": "^7.1.6",
-        "mocha": "^8.1.2",
+        "mocha": "^8.2.1",
         "tslint": "^6.1.3",
-        "typescript": "^4.0.2",
-        "vscode-test": "^1.4.0"
+        "typescript": "^4.1.2",
+        "vscode-test": "^1.4.1"
     },
     "dependencies": {
         "escape-string-regexp": "^4.0.0",
