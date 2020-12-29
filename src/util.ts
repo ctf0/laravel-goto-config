@@ -11,6 +11,7 @@ import {
 } from 'vscode'
 
 const glob = require('fast-glob')
+const exec = require('await-exec')
 
 export async function getFilePaths(text, document) {
     let info = text.replace(/['"]/g, '')
@@ -22,7 +23,7 @@ async function getData(document, list) {
     let fileList = list.split('.')
     let keyName = fileList.pop()
 
-    let workspaceFolder = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
+    let ws = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
     let paths = config.folders
     let editor = `${env.uriScheme}://file`
 
@@ -34,20 +35,57 @@ async function getData(document, list) {
 
     let result = []
     for (const path of paths) {
-        let urls = await glob(toCheck, {cwd: `${workspaceFolder}/${path}`})
+        let urls = await glob(toCheck, {cwd: `${ws}/${path}`})
         let url = urls[0]
+        let val = await getConfigValue(ws, list)
 
         if (url != undefined) {
+            let file = `${path}/${url}`
+
             result.push({
-                tooltip : `${path}/${url}`,
+                tooltip : `${val} "${file}"`,
                 fileUri : Uri
-                    .parse(`${editor}${workspaceFolder}/${path}/${url}`)
+                    .parse(`${editor}${ws}/${file}`)
                     .with({authority: 'ctf0.laravel-goto-config', query: keyName})
             })
+        } else {
+            if (config.forceShowConfigLink) {
+                result.push({
+                    tooltip : val,
+                    fileUri : null
+                })
+            }
         }
     }
 
     return result
+}
+
+/* Tinker ------------------------------------------------------------------- */
+let counter = 1
+
+async function getConfigValue(ws, key) {
+    let timer
+
+    try {
+        let res = await exec(`php artisan tinker --execute="echo config('${key}')"`, {
+            cwd   : ws,
+            shell : env.shell
+        })
+
+        return res.stdout.replace(/<.*/, '').trim()
+    } catch (error) {
+        console.error(error)
+
+        if (counter >= 5) {
+            return clearTimeout(timer)
+        }
+
+        timer = setTimeout(() => {
+            counter++
+            getConfigValue(ws, key)
+        }, 2000)
+    }
 }
 
 /* Scroll ------------------------------------------------------------------- */
@@ -119,6 +157,5 @@ export let methods: any = ''
 
 export function readConfig() {
     config = workspace.getConfiguration(PACKAGE_NAME)
-
     methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
 }

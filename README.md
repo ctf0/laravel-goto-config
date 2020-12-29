@@ -1,15 +1,16 @@
 # Laravel Goto Config
 
-- package by default search in `root/config` only
+- package by default search in `root/config` only, blame laravel for not having vendors for config as `lang & view`
 
 ## Features
 
 - direct scroll to config key
 - add key to clipboard if not found in file
+- showing value on hover `laravel/tinker must be installed`
 
 ### Limitations
 
-1. similar nested keys wont behave as expected, ex.
+- similar nested keys wont behave as expected, ex.
 
     ```php
     // messages.php
@@ -28,5 +29,3 @@
     - `config('messages.one.two.three)` will match correctly
     - `config('messages.two.three)` will match the keys under **one.two.three**
     - `config('messages.three)` will match the key under **one.two.three**
-
-2. because of the previous issue, showing value on hover will give incorrect values

@@ -39,3 +39,9 @@
 ## 0.1.5
 
 - fix package settings name
+
+## 0.2.0
+
+- we can now view the config key value with the help of `laravel/tinker`
+- add a new config `laravelGotoConfig.forceShowConfigLink`
+- oh & Merry Christmas 🎄
