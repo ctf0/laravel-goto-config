@@ -13,17 +13,20 @@ import {
 const glob = require('fast-glob')
 const exec = require('await-exec')
 
-export async function getFilePaths(text, document) {
-    let info = text.replace(/['"]/g, '')
+let ws = null
 
-    return getData(document, info)
+export async function getFilePaths(text, document) {
+    ws = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
+
+    text = text.replace(/['"]/g, '')
+
+    return getData(text)
 }
 
-async function getData(document, list) {
-    let fileList = list.split('.')
+async function getData(text) {
+    let fileList = text.split('.')
     let keyName = fileList.pop()
 
-    let ws = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
     let paths = config.folders
     let editor = `${env.uriScheme}://file`
 
@@ -37,7 +40,7 @@ async function getData(document, list) {
     for (const path of paths) {
         let urls = await glob(toCheck, {cwd: `${ws}/${path}`})
         let url = urls[0]
-        let val = await getConfigValue(ws, list)
+        let val = await getConfigValue(text)
 
         if (url != undefined) {
             let file = `${path}/${url}`
@@ -64,11 +67,11 @@ async function getData(document, list) {
 /* Tinker ------------------------------------------------------------------- */
 let counter = 1
 
-async function getConfigValue(ws, key) {
+async function getConfigValue(key) {
     let timer
 
     try {
-        let res = await exec(`php artisan tinker --execute="echo config('${key}')"`, {
+        let res = await exec(`php artisan tinker --execute="echo json_encode(config('${key}'))"`, {
             cwd   : ws,
             shell : env.shell
         })
@@ -83,7 +86,7 @@ async function getConfigValue(ws, key) {
 
         timer = setTimeout(() => {
             counter++
-            getConfigValue(ws, key)
+            getConfigValue(key)
         }, 2000)
     }
 }
