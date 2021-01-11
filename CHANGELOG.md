@@ -45,3 +45,8 @@
 - we can now view the config key value with the help of `laravel/tinker`
 - add a new config `laravelGotoConfig.forceShowConfigLink`
 - oh & Merry Christmas 🎄
+
+## 0.2.2
+
+- cache already resolved data to avoid refetching on each file scroll/open.
+- adding links should be 2x faster, if u have issues plz open a ticket.

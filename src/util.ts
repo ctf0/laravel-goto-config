@@ -14,13 +14,22 @@ const glob = require('fast-glob')
 const exec = require('await-exec')
 
 let ws = null
+let cache_store_link = []
 
 export async function getFilePaths(text, document) {
     ws = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
 
     text = text.replace(/['"]/g, '')
+    let cache_key = text
+    let list = checkCache(cache_store_link, cache_key)
 
-    return getData(text)
+    if (!list.length) {
+        list = await getData(text)
+
+        saveCache(cache_store_link, cache_key, list)
+    }
+
+    return list
 }
 
 async function getData(text) {
@@ -46,7 +55,7 @@ async function getData(text) {
             let file = `${path}/${url}`
 
             result.push({
-                tooltip : `${val} "${file}"`,
+                tooltip : `${val} (${file})`,
                 fileUri : Uri
                     .parse(`${editor}${ws}/${file}`)
                     .with({authority: 'ctf0.laravel-goto-config', query: keyName})
@@ -76,11 +85,11 @@ async function getConfigValue(key) {
             shell : env.shell
         })
 
-        return res.stdout.replace(/<.*/, '').trim()
+        return res.stdout.replace(/<.*/, '').trim().replace(/['"]/g, '')
     } catch (error) {
-        console.error(error)
+        // console.error(error)
 
-        if (counter >= 5) {
+        if (counter >= 3) {
             return clearTimeout(timer)
         }
 
@@ -150,6 +159,23 @@ function getTextPosition(searchFor, doc) {
 
         return new Range(pos, pos)
     }
+}
+
+/* Helpers ------------------------------------------------------------------ */
+
+function checkCache(cache_store, text) {
+    let check = cache_store.find((e) => e.key == text)
+
+    return check ? check.val : []
+}
+
+function saveCache(cache_store, text, val) {
+    cache_store.push({
+        key : text,
+        val : val
+    })
+
+    return val
 }
 
 /* Config ------------------------------------------------------------------- */
