@@ -28,4 +28,3 @@
 
     - `config('messages.one.two.three)` will match correctly
     - `config('messages.two.three)` will match the keys under **one.two.three**
-    - `config('messages.three)` will match the key under **one.two.three**

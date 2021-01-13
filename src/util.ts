@@ -13,12 +13,17 @@ import {
 const glob = require('fast-glob')
 const exec = require('await-exec')
 
-let ws = null
+let ws
+
+export function setWs(uri) {
+    ws = workspace.getWorkspaceFolder(uri)?.uri.fsPath
+}
+
+/* -------------------------------------------------------------------------- */
+
 let cache_store_link = []
 
-export async function getFilePaths(text, document) {
-    ws = workspace.getWorkspaceFolder(document.uri)?.uri.fsPath
-
+export async function getFilePaths(text) {
     text = text.replace(/['"]/g, '')
     let cache_key = text
     let list = checkCache(cache_store_link, cache_key)
@@ -170,10 +175,12 @@ function checkCache(cache_store, text) {
 }
 
 function saveCache(cache_store, text, val) {
-    cache_store.push({
-        key : text,
-        val : val
-    })
+    checkCache(cache_store, text).length
+        ? false
+        : cache_store.push({
+            key : text,
+            val : val
+        })
 
     return val
 }

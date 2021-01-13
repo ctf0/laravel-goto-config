@@ -23,18 +23,8 @@ export function activate(context: ExtensionContext) {
     })
 
     // links
-    if (window.activeTextEditor) {
-        initProviders()
-    }
-
-    window.onDidChangeActiveTextEditor(
-        debounce(async function (editor) {
-            if (editor) {
-                await clearAll()
-                initProviders()
-            }
-        }, 250)
-    )
+    initProviders()
+    window.onDidChangeActiveTextEditor((e) => initProviders())
 
     // scroll
     util.scrollToText()
@@ -44,17 +34,6 @@ const initProviders = debounce(function () {
     providers.push(languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider()))
 }, 250)
 
-function clearAll () {
-    return new Promise((res, rej) => {
-        providers.map((e) => e.dispose())
-        providers = []
-
-        setTimeout(() => {
-            return res(true)
-        }, 500)
-    })
-}
-
 export function deactivate() {
-    clearAll()
+    providers.forEach((e) => e.dispose())
 }
