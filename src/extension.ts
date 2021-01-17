@@ -9,7 +9,7 @@ import {
 import LinkProvider from './providers/linkProvider'
 import * as util    from './util'
 
-let providers = []
+let providers  = []
 const debounce = require('lodash.debounce')
 
 export function activate(context: ExtensionContext) {
@@ -24,16 +24,30 @@ export function activate(context: ExtensionContext) {
 
     // links
     initProviders()
-    window.onDidChangeActiveTextEditor((e) => initProviders())
+    window.onDidChangeActiveTextEditor(async (e) => {
+        await clearAll()
+        initProviders()
+    })
 
     // scroll
     util.scrollToText()
 }
 
-const initProviders = debounce(function () {
+const initProviders = debounce(function() {
     providers.push(languages.registerDocumentLinkProvider(['php', 'blade'], new LinkProvider()))
 }, 250)
 
+function clearAll() {
+    return new Promise((res, rej) => {
+        providers.map((e) => e.dispose())
+        providers = []
+
+        setTimeout(() => {
+            return res(true)
+        }, 500)
+    })
+}
+
 export function deactivate() {
-    providers.forEach((e) => e.dispose())
+    clearAll()
 }

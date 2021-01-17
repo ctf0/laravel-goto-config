@@ -24,9 +24,9 @@ export function setWs(uri) {
 let cache_store_link = []
 
 export async function getFilePaths(text) {
-    text = text.replace(/['"]/g, '')
+    text          = text.replace(/['"]/g, '')
     let cache_key = text
-    let list = checkCache(cache_store_link, cache_key)
+    let list      = checkCache(cache_store_link, cache_key)
 
     if (!list.length) {
         list = await getData(text)
@@ -39,9 +39,9 @@ export async function getFilePaths(text) {
 
 async function getData(text) {
     let fileList = text.split('.')
-    let keyName = fileList.pop()
+    let keyName  = fileList.pop()
 
-    let paths = config.folders
+    let paths  = config.folders
     let editor = `${env.uriScheme}://file`
 
     let toCheck = []
@@ -53,8 +53,8 @@ async function getData(text) {
     let result = []
     for (const path of paths) {
         let urls = await glob(toCheck, {cwd: `${ws}/${path}`})
-        let url = urls[0]
-        let val = await getConfigValue(text)
+        let url  = urls[0]
+        let val  = await getConfigValue(text)
 
         if (url != undefined) {
             let file = `${path}/${url}`
@@ -116,7 +116,7 @@ export function scrollToText() {
                     .then(() => {
                         setTimeout(() => {
                             let editor = window.activeTextEditor
-                            let range = getTextPosition(query, editor.document)
+                            let range  = getTextPosition(query, editor.document)
 
                             if (range) {
                                 editor.selection = new Selection(range.start, range.end)
@@ -141,9 +141,9 @@ export function scrollToText() {
 }
 
 function getTextPosition(searchFor, doc) {
-    let txt = doc.getText()
-    let arr = searchFor.split('.')
-    let last = arr[arr.length - 1]
+    let txt   = doc.getText()
+    let arr   = searchFor.split('.')
+    let last  = arr[arr.length - 1]
     let regex = ''
     let match
 
@@ -192,6 +192,6 @@ export let config: any = {}
 export let methods: any = ''
 
 export function readConfig() {
-    config = workspace.getConfiguration(PACKAGE_NAME)
+    config  = workspace.getConfiguration(PACKAGE_NAME)
     methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
 }
