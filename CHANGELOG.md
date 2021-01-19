@@ -50,3 +50,8 @@
 
 - cache already resolved data to avoid refetching on each file scroll/open.
 - adding links should be 2x faster, if u have issues plz open a ticket.
+
+## 0.2.5
+
+- fix range is undefined
+- fix hl keys that ends with `.`
