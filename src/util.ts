@@ -10,6 +10,8 @@ import {
     workspace
 } from 'vscode'
 
+const path = require('path')
+const sep  = path.sep
 const glob = require('fast-glob')
 const exec = require('await-exec')
 
@@ -36,7 +38,9 @@ export async function getFilePaths(text) {
     if (!list.length) {
         list = await getData(text)
 
-        saveCache(cache_store_link, cache_key, list)
+        if (list.length) {
+            saveCache(cache_store_link, cache_key, list)
+        }
     }
 
     return list
@@ -51,23 +55,24 @@ async function getData(text) {
 
     let toCheck = []
     while (fileList.length > 0) {
-        toCheck.push(`**/${fileList.join('/')}.php`)
+        toCheck.push(`**/${fileList.join(sep)}.php`)
         fileList.pop()
     }
 
     let result = []
+
     for (const path of paths) {
-        let urls = await glob(toCheck, {cwd: `${ws}/${path}`})
+        let urls = await glob(toCheck, {cwd: `${ws}${sep}${path}`})
         let url  = urls[0]
         let val  = await getConfigValue(text)
 
         if (url != undefined) {
-            let file = `${path}/${url}`
+            let file = `${path}${sep}${url}`
 
             result.push({
                 tooltip : `${val} (${file})`,
                 fileUri : Uri
-                    .parse(`${editor}${ws}/${file}`)
+                    .parse(`${editor}${ws}${sep}${file}`)
                     .with({authority: 'ctf0.laravel-goto-config', query: keyName})
             })
         } else {

@@ -55,3 +55,7 @@
 
 - fix range is undefined
 - fix hl keys that ends with `.`
+
+## 0.2.6
+
+- fix wrong path seperator for windows
