@@ -73,7 +73,7 @@ async function getData(text) {
                 tooltip : `${val} (${file})`,
                 fileUri : Uri
                     .parse(`${editor}${ws}${sep}${file}`)
-                    .with({authority: 'ctf0.laravel-goto-config', query: keyName})
+                    .with({ authority: 'ctf0.laravel-goto-config', path:'/'+`${ws}${sep}${file}`,  query: keyName })
             })
         } else {
             if (config.forceShowConfigLink) {
