@@ -63,3 +63,7 @@
 ## 0.2.7
 
 - support dynamic php command
+
+## 0.2.8
+
+- use the correct file opening command
