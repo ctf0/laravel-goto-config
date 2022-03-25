@@ -59,3 +59,7 @@
 ## 0.2.6
 
 - fix wrong path seperator for windows
+
+## 0.2.7
+
+- support dynamic php command

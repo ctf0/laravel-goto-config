@@ -95,7 +95,7 @@ async function getConfigValue(key) {
     let timer
 
     try {
-        let res = await exec(`php artisan tinker --execute="echo json_encode(config('${key}'))"`, {
+        let res = await exec(`${phpCommand} tinker --execute="echo json_encode(config('${key}'))"`, {
             cwd   : ws,
             shell : env.shell
         })
@@ -200,8 +200,10 @@ const escapeStringRegexp = require('escape-string-regexp')
 export const PACKAGE_NAME = 'laravelGotoConfig'
 export let config: any = {}
 export let methods: any = ''
+export let phpCommand: string = ''
 
 export function readConfig() {
     config  = workspace.getConfiguration(PACKAGE_NAME)
     methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
+    phpCommand = config.phpCommand
 }

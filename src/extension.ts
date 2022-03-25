@@ -7,10 +7,10 @@ import {
     workspace
 } from 'vscode'
 import LinkProvider from './providers/linkProvider'
-import * as util    from './util'
+import { debounce } from 'lodash'
+import * as util from './util'
 
 let providers  = []
-const debounce = require('lodash.debounce')
 
 export function activate(context: ExtensionContext) {
     util.readConfig()
