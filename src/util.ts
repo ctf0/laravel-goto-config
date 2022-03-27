@@ -68,11 +68,12 @@ async function getData(text) {
 
         if (url != undefined) {
             let file = `${path}${sep}${url}`
+            let normalizedPath = editor + normalizePath(`${ws}${sep}${file}`)
 
             result.push({
                 tooltip : `${val} (${file})`,
                 fileUri : Uri
-                    .parse(`${editor}${ws}${sep}${file}`)
+                    .parse(normalizedPath)
                     .with({authority: 'ctf0.laravel-goto-config', query: keyName})
             })
         } else {
@@ -86,6 +87,13 @@ async function getData(text) {
     }
 
     return result
+}
+
+function normalizePath(path)
+{
+    return path
+            .replace(/\/+/g, '/')
+            .replace(/\+/g, '\\')
 }
 
 /* Tinker ------------------------------------------------------------------- */
