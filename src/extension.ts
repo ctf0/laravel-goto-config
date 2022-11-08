@@ -1,7 +1,7 @@
 'use strict'
 
 import {
-    ExtensionContext,
+    commands,
     languages,
     window,
     workspace
@@ -12,7 +12,7 @@ import * as util from './util'
 
 let providers  = []
 
-export function activate(context: ExtensionContext) {
+export function activate({subscriptions}) {
     util.readConfig()
 
     // config
@@ -30,7 +30,7 @@ export function activate(context: ExtensionContext) {
     })
 
     // scroll
-    util.scrollToText()
+    subscriptions.push(commands.registerCommand('lgcnf.openFile', util.scrollToText))
 }
 
 const initProviders = debounce(function() {

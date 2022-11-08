@@ -9,11 +9,13 @@ import {
     window,
     workspace
 } from 'vscode'
+import escapeStringRegexp from 'escape-string-regexp';
 
 const path = require('path')
 const sep  = path.sep
 const glob = require('fast-glob')
 const exec = require('await-exec')
+const scheme = 'command:lgcnf.openFile'
 
 let ws
 
@@ -51,7 +53,6 @@ async function getData(text) {
     let keyName  = fileList.pop()
 
     let paths  = config.folders
-    let editor = `${env.uriScheme}://file`
 
     let toCheck = []
     while (fileList.length > 0) {
@@ -68,13 +69,11 @@ async function getData(text) {
 
         if (url != undefined) {
             let file = `${path}${sep}${url}`
-            let normalizedPath = editor + normalizePath(`${ws}${sep}${file}`)
+            let args = prepareArgs({ path: normalizePath(`${ws}${sep}${file}`), query: keyName });
 
             result.push({
                 tooltip : `${val} (${file})`,
-                fileUri : Uri
-                    .parse(normalizedPath)
-                    .with({authority: 'ctf0.laravel-goto-config', query: keyName})
+                fileUri : Uri.parse(`${scheme}?${args}`)
             })
         } else {
             if (config.forceShowConfigLink) {
@@ -87,6 +86,11 @@ async function getData(text) {
     }
 
     return result
+}
+
+
+function prepareArgs(args: object){
+    return encodeURIComponent(JSON.stringify([args]));
 }
 
 function normalizePath(path)
@@ -103,7 +107,7 @@ async function getConfigValue(key) {
     let timer
 
     try {
-        let res = await exec(`${phpCommand} tinker --execute="echo json_encode(config('${key}'))"`, {
+        let res = await exec(`${config.phpCommand} tinker --execute="echo json_encode(config('${key}'))"`, {
             cwd   : ws,
             shell : env.shell
         })
@@ -124,38 +128,34 @@ async function getConfigValue(key) {
 }
 
 /* Scroll ------------------------------------------------------------------- */
-export function scrollToText() {
-    window.registerUriHandler({
-        handleUri(provider) {
-            let {authority, path, query} = provider
+export function scrollToText(args) {
+    if (args !== undefined) {
+        let { path, query } = args
 
-            if (authority == 'ctf0.laravel-goto-config') {
-                commands.executeCommand('vscode.open', Uri.file(path))
-                    .then(() => {
-                        setTimeout(() => {
-                            let editor = window.activeTextEditor
-                            let range  = getTextPosition(query, editor.document)
+        commands.executeCommand('vscode.open', Uri.file(path))
+            .then(() => {
+                setTimeout(() => {
+                    let editor = window.activeTextEditor
+                    let range  = getTextPosition(query, editor.document)
 
-                            if (range) {
-                                editor.selection = new Selection(range.start, range.end)
-                                editor.revealRange(range, 3)
+                    if (range) {
+                        editor.selection = new Selection(range.start, range.end)
+                        editor.revealRange(range, 3)
+                    }
+
+                    if (!range && query) {
+                        window.showInformationMessage(
+                            'Laravel Goto Config: Copy Key To Clipboard',
+                            ...['Copy']
+                        ).then((e) => {
+                            if (e) {
+                                env.clipboard.writeText(`'${query}'`)
                             }
-
-                            if (!range && query) {
-                                window.showInformationMessage(
-                                    'Laravel Goto Config: Copy Key To Clipboard',
-                                    ...['Copy']
-                                ).then((e) => {
-                                    if (e) {
-                                        env.clipboard.writeText(`'${query}'`)
-                                    }
-                                })
-                            }
-                        }, 500)
-                    })
-            }
-        }
-    })
+                        })
+                    }
+                }, 500)
+            })
+    }
 }
 
 function getTextPosition(searchFor, doc) {
@@ -204,14 +204,11 @@ function saveCache(cache_store, text, val) {
 }
 
 /* Config ------------------------------------------------------------------- */
-const escapeStringRegexp = require('escape-string-regexp')
 export const PACKAGE_NAME = 'laravelGotoConfig'
 export let config: any = {}
 export let methods: any = ''
-export let phpCommand: string = ''
 
 export function readConfig() {
     config  = workspace.getConfiguration(PACKAGE_NAME)
     methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
-    phpCommand = config.phpCommand
 }

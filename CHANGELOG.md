@@ -71,3 +71,8 @@
 ## 0.2.9
 
 - make sure path separators are normalized
+
+## 0.3.0
+
+- fix link popup not being clickable
+- use a cmnd instead of the uri handler
