@@ -30,7 +30,7 @@ export function activate({subscriptions}) {
     })
 
     // scroll
-    subscriptions.push(commands.registerCommand('lgcnf.openFile', util.scrollToText))
+    subscriptions.push(commands.registerCommand(util.cmndName, util.scrollToText))
 }
 
 const initProviders = debounce(function() {

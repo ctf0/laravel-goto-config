@@ -15,7 +15,8 @@ const path = require('path')
 const sep  = path.sep
 const glob = require('fast-glob')
 const exec = require('await-exec')
-const scheme = 'command:lgcnf.openFile'
+export const cmndName = 'lgcnf.openFile'
+const scheme = `command:${cmndName}`
 
 let ws
 
