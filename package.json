@@ -2,7 +2,7 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel Goto Config",
     "description": "Quick jump to config",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "publisher": "ctf0",
     "engines": {
         "vscode": "^1.68.0"
@@ -48,7 +48,8 @@
                         "config(",
                         "config([",
                         "Config::get(",
-                        "Config::set("
+                        "Config::set(",
+                        "giveConfig("
                     ],
                     "items": {
                         "type": "string"
@@ -75,8 +76,7 @@
         "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
         "esbuild": "npm run esbuild-base -- --sourcemap",
         "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
-        "watch": "npm run vscode:prepublish",
-        "test-compile": "tsc -p ./"
+        "watch": "npm run vscode:prepublish"
     },
     "devDependencies": {
         "@types/glob": "^8.0.0",
