@@ -1,5 +1,6 @@
 'use strict'
 
+import {debounce} from 'lodash'
 import {
     commands,
     languages,
@@ -7,10 +8,9 @@ import {
     workspace
 } from 'vscode'
 import LinkProvider from './providers/linkProvider'
-import { debounce } from 'lodash'
-import * as util from './util'
+import * as util    from './util'
 
-let providers  = []
+let providers = []
 
 export function activate({subscriptions}) {
     util.readConfig()

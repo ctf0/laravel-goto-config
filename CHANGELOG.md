@@ -76,3 +76,9 @@
 
 - fix link popup not being clickable
 - use a cmnd instead of the uri handler
+
+## 0.4.0
+
+- use symbol provider to navigate to the correct config key
+- correct the link match regex
+- update license because of [shameful Copycats](https://marketplace.visualstudio.com/items?itemName=MrChetan.laravel-goto-config)

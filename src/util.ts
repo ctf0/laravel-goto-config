@@ -1,18 +1,19 @@
 'use strict'
 
+import escapeStringRegexp from 'escape-string-regexp';
 import {
     commands,
+    DocumentSymbol,
     env,
-    Range,
     Selection,
+    TextEditorRevealType,
     Uri,
     window,
     workspace
-} from 'vscode'
-import escapeStringRegexp from 'escape-string-regexp';
+} from 'vscode';
 
 const path = require('path')
-const sep  = path.sep
+const sep = path.sep
 const glob = require('fast-glob')
 const exec = require('await-exec')
 export const cmndName = 'lgcnf.openFile'
@@ -36,7 +37,7 @@ export async function getFilePaths(text) {
     }
 
     let cache_key = text
-    let list      = checkCache(cache_store_link, cache_key)
+    let list = checkCache(cache_store_link, cache_key)
 
     if (!list.length) {
         list = await getData(text)
@@ -51,9 +52,7 @@ export async function getFilePaths(text) {
 
 async function getData(text) {
     let fileList = text.split('.')
-    let keyName  = fileList.pop()
-
-    let paths  = config.folders
+    let paths = config.folders
 
     let toCheck = []
     while (fileList.length > 0) {
@@ -64,23 +63,27 @@ async function getData(text) {
     let result = []
 
     for (const path of paths) {
-        let urls = await glob(toCheck, {cwd: `${ws}${sep}${path}`})
-        let url  = urls[0]
-        let val  = await getConfigValue(text)
+        let urls = await glob(toCheck, { cwd: `${ws}${sep}${path}` })
+        let url = urls[0]
+        let val = await getConfigValue(text)
 
         if (url != undefined) {
+            // because we dont know which is (a config key) & which is (the config file name)
+            let configFile = url.replace('.php', '')
+            let keyName = text.replace(text.match(`.*${configFile}\\.`), '')
+
             let file = `${path}${sep}${url}`
             let args = prepareArgs({ path: normalizePath(`${ws}${sep}${file}`), query: keyName });
 
             result.push({
-                tooltip : `${val} (${file})`,
-                fileUri : Uri.parse(`${scheme}?${args}`)
+                tooltip: `${val} (${file})`,
+                fileUri: Uri.parse(`${scheme}?${args}`)
             })
         } else {
             if (config.forceShowConfigLink) {
                 result.push({
-                    tooltip : val,
-                    fileUri : null
+                    tooltip: val,
+                    fileUri: null
                 })
             }
         }
@@ -90,15 +93,14 @@ async function getData(text) {
 }
 
 
-function prepareArgs(args: object){
+function prepareArgs(args: object) {
     return encodeURIComponent(JSON.stringify([args]));
 }
 
-function normalizePath(path)
-{
+function normalizePath(path) {
     return path
-            .replace(/\/+/g, '/')
-            .replace(/\+/g, '\\')
+        .replace(/\/+/g, '/')
+        .replace(/\+/g, '\\')
 }
 
 /* Tinker ------------------------------------------------------------------- */
@@ -109,8 +111,8 @@ async function getConfigValue(key) {
 
     try {
         let res = await exec(`${config.phpCommand} tinker --execute="echo json_encode(config('${key}'))"`, {
-            cwd   : ws,
-            shell : env.shell
+            cwd: ws,
+            shell: env.shell
         })
 
         return res.stdout.replace(/<.*/, '').trim().replace(/['"]/g, '')
@@ -133,55 +135,54 @@ export function scrollToText(args) {
     if (args !== undefined) {
         let { path, query } = args
 
-        commands.executeCommand('vscode.open', Uri.file(path))
-            .then(() => {
-                setTimeout(() => {
-                    let editor = window.activeTextEditor
-                    let range  = getTextPosition(query, editor.document)
+        commands.executeCommand('vscode.open', Uri.file(path)).then(async () => {
+            let editor = window.activeTextEditor
 
-                    if (range) {
-                        editor.selection = new Selection(range.start, range.end)
-                        editor.revealRange(range, 3)
-                    }
+            let symbols: DocumentSymbol[] = await commands.executeCommand("vscode.executeDocumentSymbolProvider", editor.document.uri)
+            let range: any
+            query = query.split('.')
 
-                    if (!range && query) {
-                        window.showInformationMessage(
-                            'Laravel Goto Config: Copy Key To Clipboard',
-                            ...['Copy']
-                        ).then((e) => {
-                            if (e) {
-                                env.clipboard.writeText(`'${query}'`)
-                            }
-                        })
+            if (query.length > 1) {
+                range = getRange(symbols, query)
+            } else {
+                range = symbols.find((symbol) => symbol.name == query)?.location.range
+            }
+
+            if (range) {
+                editor.selection = new Selection(range.start, range.end)
+                editor.revealRange(range, TextEditorRevealType.InCenter)
+            }
+
+            if (!range && query) {
+                window.showInformationMessage(
+                    'Laravel Goto Config: Copy Key To Clipboard',
+                    ...['Copy']
+                ).then((e) => {
+                    if (e) {
+                        env.clipboard.writeText(`'${query}'`)
                     }
-                }, 500)
-            })
+                })
+            }
+        })
     }
 }
 
-function getTextPosition(searchFor, doc) {
-    let txt   = doc.getText()
-    let arr   = searchFor.split('.')
-    let last  = arr[arr.length - 1]
-    let regex = ''
-    let match
+function getRange(symbolsList: Array<any>, keysArray: string[]): any {
+    let key: any = null
 
-    if (searchFor.includes('.')) {
-        for (const item of arr) {
-            regex += item == last
-                ? `${item}.*=>`
-                : `['"]${item}.*\\[([\\S\\s]*?)`
+    while (keysArray.length) {
+        key = keysArray.shift()
+        let node = symbolsList.find((symbol: any) => symbol.name === key)
+
+        if (node) {
+            if (node.children && keysArray.length) {
+                return getRange(node.children, keysArray)
+            }
+
+            return node.location.range
         }
 
-        match = new RegExp(regex).exec(txt)
-    } else {
-        match = new RegExp(`['"]${searchFor}['"].*=>`).exec(txt)
-    }
-
-    if (match) {
-        let pos = doc.positionAt(match.index + match[0].length)
-
-        return new Range(pos, pos)
+        break
     }
 }
 
@@ -197,8 +198,8 @@ function saveCache(cache_store, text, val) {
     checkCache(cache_store, text).length
         ? false
         : cache_store.push({
-            key : text,
-            val : val
+            key: text,
+            val: val
         })
 
     return val
@@ -210,6 +211,6 @@ export let config: any = {}
 export let methods: any = ''
 
 export function readConfig() {
-    config  = workspace.getConfiguration(PACKAGE_NAME)
+    config = workspace.getConfiguration(PACKAGE_NAME)
     methods = config.methods.map((e) => escapeStringRegexp(e)).join('|')
 }
