@@ -1,5 +1,6 @@
 'use strict';
 
+import escapeStringRegexp from 'escape-string-regexp';
 import {
     DocumentLink,
     DocumentLinkProvider,
@@ -27,11 +28,11 @@ export default class LinkProvider implements DocumentLinkProvider {
             const matches = text.matchAll(regex);
 
             for (const match of matches) {
-                const found = match[0];
+                const found = match[2];
                 const files = await util.getFilePaths(found);
                 const range = doc.getWordRangeAtPosition(
-                    doc.positionAt(match.index),
-                    regex,
+                    doc.positionAt(match.index + found.length),
+                    new RegExp(escapeStringRegexp(found)),
                 );
 
                 if (files.length && range) {

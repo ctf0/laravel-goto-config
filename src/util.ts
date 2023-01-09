@@ -5,12 +5,13 @@ import { execaCommand } from 'execa';
 import glob from 'fast-glob';
 import * as path from 'node:path';
 import {
-    commands,
     DocumentSymbol,
-    env,
     Selection,
     TextEditorRevealType,
     Uri,
+    WorkspaceConfiguration,
+    commands,
+    env,
     window,
     workspace,
 } from 'vscode';
@@ -207,7 +208,7 @@ function saveCache(cache_store, text, val) {
 
 /* Config ------------------------------------------------------------------- */
 export const PACKAGE_NAME = 'laravelGotoConfig';
-export let config: any = {};
+export let config: WorkspaceConfiguration;
 export let methods: any = '';
 
 export function readConfig() {
