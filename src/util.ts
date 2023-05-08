@@ -18,7 +18,7 @@ export const CMND_NAME = 'lgcnf.openFile';
 
 const sep = path.sep;
 const SCHEME = `command:${CMND_NAME}`;
-const PKG_LABEL = 'Laravel Goto';
+const PKG_LABEL = 'Laravel Goto Config';
 const outputChannel = window.createOutputChannel(PKG_LABEL, 'log');
 let ws;
 
@@ -160,7 +160,7 @@ export function scrollToText(args) {
 
             if (!range && query) {
                 window.showInformationMessage(
-                    'Laravel Goto Config: Copy Key To Clipboard',
+                    `${PKG_LABEL}: Copy Key To Clipboard`,
                     ...['Copy'],
                 ).then((e) => {
                     if (e) {
