@@ -82,3 +82,7 @@
 - use symbol provider to navigate to the correct config key
 - correct the link match regex
 - update license because of [shameful Copycats](https://marketplace.visualstudio.com/items?itemName=MrChetan.laravel-goto-config)
+
+## 0.4.3
+
+- show output panel when phpcommand fails

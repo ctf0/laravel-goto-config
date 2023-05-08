@@ -1,5 +1,3 @@
-'use strict';
-
 import escapeStringRegexp from 'escape-string-regexp';
 import { execaCommand } from 'execa';
 import glob from 'fast-glob';
@@ -16,10 +14,12 @@ import {
     workspace,
 } from 'vscode';
 
-const sep = path.sep;
 export const CMND_NAME = 'lgcnf.openFile';
-const SCHEME = `command:${CMND_NAME}`;
 
+const sep = path.sep;
+const SCHEME = `command:${CMND_NAME}`;
+const PKG_LABEL = 'Laravel Goto';
+const outputChannel = window.createOutputChannel(PKG_LABEL, 'log');
 let ws;
 
 export function setWs(uri) {
@@ -121,6 +121,10 @@ async function getConfigValue(key) {
         // console.error(error)
 
         if (counter >= 3) {
+            outputChannel.clear();
+            outputChannel.appendLine(error.message);
+            outputChannel.show();
+
             return clearTimeout(timer);
         }
 

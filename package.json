@@ -2,7 +2,7 @@
     "name": "laravel-goto-config",
     "displayName": "Laravel Goto Config",
     "description": "Quick jump to config",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "publisher": "ctf0",
     "engines": {
         "vscode": "^1.68.0"
