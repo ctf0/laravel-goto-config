@@ -1,6 +1,8 @@
+> Laravel now have this [vscode-laravel](https://marketplace.visualstudio.com/items?itemName=laravel.vscode-laravel)
+
 # Laravel Goto Config
 
-- package by default search in `root/config` only, blame laravel for not having vendors for config as `lang & view`
+- package by default search in `./config` only, blame laravel for not having vendors for config as `lang & view`
 
 ## Features
 
